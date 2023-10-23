@@ -1,0 +1,55 @@
+---
+title: "ReproductibilityExercise_AREC570"
+author: "Jorge"
+date: "2023-10-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+setwd("/Users/jorgecoronel/Desktop/AREC 570/ReproductibilityExercise")
+
+gdp_52_67 <- read_csv("data/gdp_52-67.csv")
+le_52_67 <- read_csv("data/le_52-67.csv")
+```
+
+```{r}
+# Merge the datasets based on common columns (country and year)
+merged_data <- merge(gdp_52_67, le_52_67, by = c("country", "year"))
+
+# Create the desired table with selected columns and calculated gdpPercap
+desired_table <- merged_data %>%
+  select(continent.x, country, year, lifeExp, pop, gdp) %>%
+  rename(continent = continent.x) %>%
+  mutate(gdpPercap = gdp / pop)
+desired_table
+```
+
+```{r}
+# Filter data for Canada in the 1950s and 1960s
+canada_data <- desired_table %>%
+  filter(country == "Canada", year >= 1950, year <= 1969)
+
+# Plot life expectancy and GDP per capita over time for Canada
+ggplot(canada_data, aes(x = year, y = lifeExp, color = gdpPercap)) +
+  geom_line() +
+  labs(title = "Life Expectancy and GDP per Capita in Canada (1950s-1960s)",
+       x = "Year",
+       y = "Life Expectancy",
+       color = "GDP per Capita") +
+  theme_minimal()
+
+```
+
+```{r}
+regression_model <- lm(lifeExp ~ gdpPercap, data = canada_data)
+
+summary(regression_model)
+```
+
