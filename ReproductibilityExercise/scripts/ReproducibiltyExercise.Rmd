@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
 
+HELLO
+
 setwd("/Users/jorgecoronel/Desktop/AREC 570/ReproductibilityExercise")
 
 gdp_52_67 <- read_csv("data/gdp_52-67.csv")
